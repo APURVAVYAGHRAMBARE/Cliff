@@ -1,22 +1,42 @@
-Create customers table
+git clone https://github.com/scriptcamp/kubernetes-jenkins
 
-[Syntax:id INT
-        first name VARCHAR(45)
-        last name VARCHAR(45)
-        email VARCHAR(45)]
+kubectl create namespace devops-tools
 
-SHOW DATABASES;
 
-CREATE DATABASE cinema_system;
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: jenkins-admin
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["*"]
 
-USE cinema_system;
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins-admin
+  namespace: devops-tools
 
-CREATE TABLE customers(
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      first name VARCHAR(45), 
-      last name VARCHAR(45) NOT NULL,
-      email VARCHAR(45) NOT NULL UNIQUE,
-)
-SHOW TABLES;
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: jenkins-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: jenkins-admin
+subjects:
+- kind: ServiceAccount
+  name: jenkins-admin
+  namespace: devops-tools
+  
+kubectl apply -f serviceAccount.yaml
 
-DESCRIBE customers;
+----------------------------------------------------------------------------------------------
+
+  
+  
