@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+  namespace: devops-tools
+  annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/path:   /
+      prometheus.io/port:   '8080'
+spec:
+  selector: 
+    app: jenkins-server
+  type: NodePort  
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 32000
+      
+      
+      
+kubectl apply -f service.yaml
+
+http://<node-ip>:32000
+
+kubectl get pods --namespace=devops-tools
+
+kubectl logs jenkins-deployment-2539456353-j00w5 --namespace=jenkins
+
+kubectl exec -it jenkins-559d8cd85c-cfcgk cat  /var/jenkins_home/secrets/initialAdminPassword -n devops-tools
